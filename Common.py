@@ -18,7 +18,7 @@ import ConfigParser
 def init_begin(doc):
     # Check that script not runned by root
     if geteuid() == 0:
-        log('ERROR', 'Script is running by the root user, but this is really dangerous! Please use unprivileged user.')
+        log('error', 'Script is running by the root user, but this is really dangerous! Please use unprivileged user.')
         sysexit(1)
 
     # Get name & version from doc
@@ -28,7 +28,7 @@ def init_begin(doc):
         _VERSION = tmp.pop()
         _NAME = ' '.join(tmp)
     except:
-        log('WARNING', 'Unable to get script "%s %s" from provided doc: "%s"' % (_NAME, _VERSION, doc))
+        log('warning', 'Unable to get script "%s %s" from provided doc: "%s"' % (_NAME, _VERSION, doc))
 
     # Prepare optparser
     global _PARSER, option
@@ -37,12 +37,12 @@ def init_begin(doc):
 
 def init_end():
     # Add default options and parse cmd
-    option('-l', '--log-file', type='string', dest='log-file', metavar='FILE',
-       default=None, help='copy log output to file [%default]')
-    option('-c', '--config-file', type='string', dest='config-file', metavar='FILE',
+    option('--config-file', type='string', dest='config-file', metavar='FILE',
        default=None, help='get configuration from ini file (replaced by command line parameters) [%default]')
-    option('-e', '--config-example', action='callback', callback=_exampleini,
+    option('--config-example', action='callback', callback=_exampleini,
        default=None, help='print example ini config file to stdout')
+    option('--log-file', type='string', dest='log-file', metavar='FILE',
+       default=None, help='copy log output to file [%default]')
     option('-v', '--verbose', action='store_true', dest='verbose',
        help='verbose mode - moar output to stdout')
     option('-q', '--quiet', action='store_false', dest='verbose',
@@ -93,28 +93,28 @@ def init_end():
         def newlog(logtype, message):
             func = inspect.currentframe().f_back
             log_time = time()
-            if logtype != "ERROR":
-                stdout.write('[%s.%s %s, line:%03u]: %s\n' % (strftime('%H:%M:%S', localtime(log_time)), str(log_time % 1)[2:8], logtype, func.f_lineno, message))
+            if logtype != 'error':
+                stdout.write('[%s.%s %s, line:%03u]:\t %s\n' % (strftime('%H:%M:%S', localtime(log_time)), str(log_time % 1)[2:8], logtype.upper(), func.f_lineno, '  ' * (len(inspect.stack()) - 1) + message))
             else:
-                stderr.write('[%s.%s %s, line:%03u]: %s\n' % (strftime('%H:%M:%S', localtime(log_time)), str(log_time % 1)[2:8], logtype, func.f_lineno, message))
+                stderr.write('[%s.%s %s, line:%03u]:\t %s\n' % (strftime('%H:%M:%S', localtime(log_time)), str(log_time % 1)[2:8], logtype.upper(), func.f_lineno, '  ' * (len(inspect.stack()) - 1) + message))
         log = newlog
     elif _CFG['verbose'] == False:
         # Only error log
         def newlog(logtype, message):
-            if logtype == "ERROR":
-                stderr.write('[%s %s]: %s\n' % (strftime('%H:%M:%S'), logtype, message))
+            if logtype.lower() == 'error':
+                stderr.write('[%s %s]:\t %s\n' % (strftime('%H:%M:%S'), logtype.upper(), message))
         log = newlog
 
 def log(logtype, message):
     # Default non-debug log
-    if logtype != "DEBUG":
-        if logtype != "ERROR":
-            stdout.write('[%s %s]: %s\n' % (strftime('%H:%M:%S'), logtype, message))
+    if logtype.lower() != 'debug':
+        if logtype.lower() != 'error':
+            stdout.write('[%s %s]:\t %s\n' % (strftime('%H:%M:%S'), logtype.upper(), message))
         else:
-            stderr.write('[%s %s]: %s\n' % (strftime('%H:%M:%S'), logtype, message))
+            stderr.write('[%s %s]:\t %s\n' % (strftime('%H:%M:%S'), logtype.upper(), message))
 
 def option():
-    log('ERROR', 'Unable to use option before init_start(__doc__) execution.')
+    log('error', 'Unable to use option before init_start(__doc__) execution.')
     sysexit(1)
 
 _NAME = '<name>'

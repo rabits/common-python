@@ -7,6 +7,13 @@ License:     GPL v3
 Description: Common script tools
 Required:    python2.7
 
+Reserved options:
+  --config-file
+  --config-example
+  --log-file
+  -v --verbose
+  -q --quiet
+
 Usage:
   #!/usr/bin/python
   # -*- coding: UTF-8 -*-
@@ -18,7 +25,7 @@ Usage:
   c.option('-u', '--user', type='string', dest='user', metavar='NAME', default=None, help='Username (required)')
   c.init_end()
 
-  c.log('INFO', 'Script %s v%s was started, %s!' % (c.name(), c.version(), c.cfg('user')))
+  c.log('info', 'Script %s v%s was started, %s!' % (c.name(), c.version(), c.cfg('user')))
 '''
 
 import Common as C
@@ -31,7 +38,6 @@ def init_begin(doc):
     C.init_begin(doc)
     option = C.option
 
-
 ## init_end()
 # End block of common library init
 #
@@ -42,9 +48,9 @@ def init_end():
 
 ## log(logtype, message)
 # Log message types:
-#  DEBUG - displayed only in verbose mode
-#  ...   - any other messages
-#  ERROR - displayed even if verbose set to quiet
+#  debug - displayed only in verbose mode
+#  ...   - any other messages you want
+#  error - displayed even if verbose set to quiet
 #
 log = C.log
 
