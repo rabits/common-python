@@ -81,7 +81,8 @@ def init_end():
                     f.write(obj)
                     f.flush()
 
-        logfile = open(_CFG['log-file'], 'a')
+        import codecs
+        logfile = codecs.open(_CFG['log-file'], 'a', 'utf-8')
         global stdout, stderr
         stdout = Tee(stdout, logfile)
         stderr = Tee(stderr, logfile)
