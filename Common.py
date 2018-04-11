@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-'''Common 1.0
+'''Common 1.0.1
 
 Author:      Rabit <home@rabits.org>
 License:     GPL v3
@@ -9,7 +9,11 @@ Required:    python2.7
 '''
 
 from sys import stderr, stdout, exit as sysexit
-from os import geteuid
+from os import name as os_name
+if os_name == 'nt':
+    geteuid = lambda: 1
+else:
+    from os import geteuid
 from time import strftime, time, localtime
 
 from optparse import OptionParser
